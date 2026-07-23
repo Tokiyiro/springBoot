@@ -2,6 +2,7 @@ package com.lzj.admin.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -36,6 +37,7 @@ public class Supplier implements Serializable {
     private String name;
 
     @ApiModelProperty(value = "联系电话")
+    @TableField("\"number\"")
     private String number;
 
     @ApiModelProperty(value = "备注")
