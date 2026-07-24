@@ -4,22 +4,66 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.lzj.admin.pojo.Goods">
-        <id column="id" property="id" />
-        <result column="code" property="code" />
-        <result column="inventory_quantity" property="inventoryQuantity" />
-        <result column="min_num" property="minNum" />
-        <result column="model" property="model" />
-        <result column="name" property="name" />
-        <result column="producer" property="producer" />
-        <result column="purchasing_price" property="purchasingPrice" />
-        <result column="remarks" property="remarks" />
-        <result column="selling_price" property="sellingPrice" />
-        <result column="unit" property="unit" />
-        <result column="type_id" property="typeId" />
-        <result column="state" property="state" />
-        <result column="last_purchasing_price" property="lastPurchasingPrice" />
-        <result column="is_del" property="isDel" />
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="inventory_quantity" property="inventoryQuantity"/>
+        <result column="min_num" property="minNum"/>
+        <result column="model" property="model"/>
+        <result column="name" property="name"/>
+        <result column="producer" property="producer"/>
+        <result column="purchasing_price" property="purchasingPrice"/>
+        <result column="remarks" property="remarks"/>
+        <result column="selling_price" property="sellingPrice"/>
+        <result column="unit" property="unit"/>
+        <result column="type_id" property="typeId"/>
+        <result column="state" property="state"/>
+        <result column="last_purchasing_price" property="lastPurchasingPrice"/>
+        <result column="is_del" property="isDel"/>
+
+        <!-- 新增 -->
+        <result column="UNITNAME" property="unitName"/>
+        <result column="TYPENAME" property="typeName"/>
     </resultMap>
 
+    <select id="queryGoodsByParams" resultMap="BaseResultMap">
+        SELECT
+            g.*,
+            gt.name AS TYPENAME,
+            u.name AS UNITNAME
+        FROM t_goods g
+        LEFT JOIN t_goods_type gt
+            ON g.type_id = gt.id
+        LEFT JOIN t_goods_unit u
+            ON TO_NUMBER(g.unit) = u.id
+        <where>
+            g.is_del = 0
+            <if test="query.goodsName != null and query.goodsName != ''">
+                AND g.name LIKE '%' || #{query.goodsName} || '%'
+            </if>
+            <if test="query.typeId != null">
+                AND g.type_id = #{query.typeId}
+            </if>
+        </where>
+    </select>
+
+	<select id="queryGoodsInfo"
+        resultType="com.lzj.admin.pojo.Goods">
+
+	    SELECT
+	        g.*,
+	        gt.NAME AS type_name,
+	        gu.NAME AS unit_name
+	
+	    FROM T_GOODS g
+	
+	    LEFT JOIN T_GOODS_TYPE gt
+	    ON g.TYPE_ID = gt.ID
+	
+	    LEFT JOIN T_GOODS_UNIT gu
+	    ON g.UNIT = gu.ID
+	
+	    WHERE g.ID = #{id}
+	
+	</select>
 
 </mapper>

@@ -15,5 +15,10 @@
     <sql id="Base_Column_List">
         id, name, p_id, state, icon
     </sql>
+    
+    <select id="queryAllGoodsTypes" resultType="com.lzj.admin.pojo.GoodsType">
+	    select *
+	    from t_goods_type
+	</select>
 
 </mapper>

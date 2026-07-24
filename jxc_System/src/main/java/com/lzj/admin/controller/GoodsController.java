@@ -40,7 +40,7 @@ public class GoodsController {
     @RequestMapping("list")
     @ResponseBody
     public Map<String,Object> goodsList(GoodsQuery goodsQuery){
-        return null;
+        return goodsService.queryGoodsByParams(goodsQuery);
     }
 
 

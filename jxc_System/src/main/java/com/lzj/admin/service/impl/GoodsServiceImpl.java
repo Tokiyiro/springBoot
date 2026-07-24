@@ -13,6 +13,8 @@ import com.lzj.admin.service.GoodsTypeService;
 import com.lzj.admin.service.SaleListGoodsService;
 import com.lzj.admin.utils.AssertUtil;
 import com.lzj.admin.utils.PageResultUtil;
+import com.lzj.admin.utils.StringUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -38,5 +40,36 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
     @Resource
     private CustomerReturnListGoodsService customerReturnListGoodsService;
+    @Resource
+    private GoodsMapper goodsMapper;
 
+    @Override
+    public Map<String, Object> queryGoodsByParams(GoodsQuery goodsQuery) {
+
+        // 分页对象
+        Page<Goods> page = new Page<>(goodsQuery.getPage(), goodsQuery.getLimit());
+
+        // 查询条件
+        QueryWrapper<Goods> wrapper = new QueryWrapper<>();
+
+        // 商品名称
+        if (StringUtils.isNotBlank(goodsQuery.getGoodsName())) {
+            wrapper.like("name", goodsQuery.getGoodsName());
+        }
+
+        // 商品类别
+        if (goodsQuery.getTypeId() != null) {
+            wrapper.eq("type_id", goodsQuery.getTypeId());
+        }
+
+        IPage<Goods> goodsPage = baseMapper.queryGoodsByParams(page, goodsQuery);
+        System.out.println(goodsPage.getRecords());
+
+        return PageResultUtil.setResult(goodsPage.getTotal(), goodsPage.getRecords());
+    }
+    
+    @Override
+    public Goods queryGoodsInfo(Integer id) {
+        return goodsMapper.queryGoodsInfo(id);
+    }
 }

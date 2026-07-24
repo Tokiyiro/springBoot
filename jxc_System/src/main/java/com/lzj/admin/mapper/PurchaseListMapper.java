@@ -18,4 +18,6 @@ import java.util.List;
 @Mapper
 public interface PurchaseListMapper extends BaseMapper<PurchaseList> {
 
+    String getNextPurchaseNumber();
+
 }

@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
+
 /**
  * 商品表类型实现类
  * @author TianTian
@@ -28,4 +30,12 @@ import java.util.stream.Collectors;
 @Service
 public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType> implements GoodsTypeService {
 
+	@Resource
+    private GoodsTypeMapper goodsTypeMapper;
+
+    @Override
+    public List<GoodsType> queryAllGoodsTypes() {
+        return goodsTypeMapper.queryAllGoodsTypes();
+    }
+	
 }

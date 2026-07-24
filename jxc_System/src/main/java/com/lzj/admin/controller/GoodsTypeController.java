@@ -28,8 +28,8 @@ public class GoodsTypeController {
 
     @RequestMapping("queryAllGoodsTypes")
     @ResponseBody
-    public List<TreeDto> queryAllGoodsTypes(Integer typeId){
-        return null;
+    public List<GoodsType> queryAllGoodsTypes() {
+        return goodsTypeService.queryAllGoodsTypes();
     }
 
 

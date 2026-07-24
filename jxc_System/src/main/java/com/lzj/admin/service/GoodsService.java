@@ -14,4 +14,11 @@ import java.util.Map;
  */
 public interface GoodsService extends IService<Goods> {
 
+	/**
+     * 商品分页查询
+     */
+    Map<String,Object> queryGoodsByParams(GoodsQuery goodsQuery);
+    
+    Goods queryGoodsInfo(Integer id);
+	
 }

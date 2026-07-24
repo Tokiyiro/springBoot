@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface GoodsTypeMapper extends BaseMapper<GoodsType> {
 
+	 List<GoodsType> queryAllGoodsTypes();
 }

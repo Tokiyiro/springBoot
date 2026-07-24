@@ -41,6 +41,11 @@ public class CommonController {
      */
     @RequestMapping("toAddGoodsInfoPage")
     public String toGoodsInfoPage(Integer gid, Model model){
+
+    	Goods goods = goodsService.queryGoodsInfo(gid);
+
+        model.addAttribute("goods", goods);
+
         return "common/goods_add_update";
     }
 
@@ -52,7 +57,29 @@ public class CommonController {
      * @return
      */
     @RequestMapping("toUpdateGoodsInfoPage")
-    public String toUpdateGoodsInfoPage(GoodsModel goodsModel, Model model){
+    public String toUpdateGoodsInfoPage(Integer gid,
+                                         Integer id,
+                                         Float price,
+                                         Integer num,
+                                         Float total,
+                                         Model model){
+
+        // 兼容旧页面使用 id、新页面使用 gid 的两种参数名。
+        Integer goodsId = gid != null ? gid : id;
+        System.out.println("收到的商品ID：" + goodsId);
+
+        if(goodsId == null){
+            throw new RuntimeException("商品ID不能为空");
+        }
+
+        Goods goods = goodsService.queryGoodsInfo(goodsId);
+
+        model.addAttribute("goods", goods);
+        model.addAttribute("price", price);
+        model.addAttribute("num", num);
+        model.addAttribute("total", total);
+        model.addAttribute("flag",1);
+
         return "common/goods_add_update";
     }
 

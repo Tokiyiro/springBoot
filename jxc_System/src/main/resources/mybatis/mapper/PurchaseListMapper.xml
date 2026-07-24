@@ -15,4 +15,13 @@
         <result column="user_id" property="userId" />
     </resultMap>
 
+    <select id="getNextPurchaseNumber" resultType="java.lang.String">
+        <![CDATA[
+        SELECT MAX(purchase_number) AS purchaseNumber
+        FROM t_purchase_list
+        WHERE purchase_date >= TRUNC(SYSDATE)
+          AND purchase_date < TRUNC(SYSDATE) + 1
+        ]]>
+    </select>
+
 </mapper>

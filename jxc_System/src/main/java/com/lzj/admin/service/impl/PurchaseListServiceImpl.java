@@ -39,7 +39,26 @@ import java.util.Map;
  */
 @Service
 public class PurchaseListServiceImpl extends ServiceImpl<PurchaseListMapper, PurchaseList> implements PurchaseListService {
-
+	
+	@Override
+	public String getNextPurchaseNumber() {
+		 // JH20210101000X
+        try {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append("JH");
+            stringBuffer.append(DateUtil.getCurrentDateStr());
+            String purchaseNumber = this.baseMapper.getNextPurchaseNumber();
+            if (null != purchaseNumber) {
+                stringBuffer.append(StringUtil.formatCode(purchaseNumber));
+            } else {
+                stringBuffer.append("0001");
+            }
+            return stringBuffer.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+	}
 
     @Resource
     private PurchaseListGoodsService purchaseListGoodsService;
@@ -49,5 +68,7 @@ public class PurchaseListServiceImpl extends ServiceImpl<PurchaseListMapper, Pur
 
     @Autowired
     private GoodsTypeService goodsTypeService;
+
+	
 
 }

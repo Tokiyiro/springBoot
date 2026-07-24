@@ -43,6 +43,7 @@ public class PurchaseListController {
      */
     @RequestMapping("index")
     public String index(Model model){
+    	model.addAttribute("purchaseNumber",purchaseListService.getNextPurchaseNumber());
         return "purchase/purchase";
     }
 

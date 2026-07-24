@@ -7,11 +7,11 @@
 <body class="childrenBody">
 
 <form class="layui-form" >
-	<input type="hidden" name="purchaseNumber" value="" >
+	<input type="hidden" name="purchaseNumber" value="${purchaseNumber!}" >
 	<input type="hidden" name="goodsJson" >
 	<blockquote class="layui-elem-quote quoteBox">
 		<fieldset class="layui-elem-field site-demo-button" >
-			<legend>单号:</legend>
+			<legend>单号:${purchaseNumber!}</legend>
 			<br/>
 			<div class="layui-row">
 				<div class="layui-col-xs3">
