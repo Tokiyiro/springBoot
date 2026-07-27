@@ -81,6 +81,8 @@ public class Goods implements Serializable {
     @ApiModelProperty(value = "销售总数")
     @TableField(exist = false)
     private Integer saleTotal;
-
+    
+    @TableField(exist = false)
+    private Integer num;
 
 }

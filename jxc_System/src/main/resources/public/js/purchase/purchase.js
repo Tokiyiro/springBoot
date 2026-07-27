@@ -1,158 +1,183 @@
-layui.use(['element', 'laydate', 'table', 'layer', 'form'], function () {
-    var layer = parent.layer === undefined ? layui.layer : top.layer,
+layui.use(['element','laydate','table','layer'],function(){
+       var layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery,
         laydate = layui.laydate,
-        form = layui.form,
+        form = layui.form
         table = layui.table;
 
-    laydate.render({ elem: '#purchaseDate' });
-
+    laydate.render({
+        elem: '#purchaseDate'
+    });
     $.ajax({
-        type: 'post',
-        url: ctx + '/supplier/allGoodsSuppliers',
-        success: function (data) {
-            if (data) {
-                $.each(data, function (index, item) {
-                    $('#supplierId').append("<option value='" + item.id + "'>" + item.name + '</option>');
+        type:"post",
+        url:ctx+"/supplier/allGoodsSuppliers",
+        success:function (data){
+            if (data!== null) {
+                $.each(data, function(index, item) {
+                    $("#supplierId").append("<option value='"+item.id+"' >"+item.name+"</option>");
                 });
             }
-            form.render('select');
+            //重新渲染
+            form.render("select")
         }
-    });
+    })
 
-    table.render({
+
+
+
+     var tableIns =table.render({
         elem: '#purchaseList',
-        height: 'full-125',
-        toolbar: '#toolbarDemo',
-        id: 'purchaseListTable',
-        cols: [[
-            { field: 'id', hide: true },
-            { field: 'code', title: '商品编码', minWidth: 50, align: 'center' },
-            { field: 'name', title: '商品名称', minWidth: 100, align: 'center' },
-            { field: 'model', title: '商品型号', minWidth: 100, align: 'center' },
-            { field: 'price', title: '单价', minWidth: 100, align: 'center' },
-            { field: 'num', title: '数量', minWidth: 100, align: 'center' },
-            { field: 'unit', title: '单位', minWidth: 100, align: 'center' },
-            { field: 'total', title: '总金额', minWidth: 100, align: 'center' },
-            { title: '操作', minWidth: 150, templet: '#goodsListBar', fixed: 'right', align: 'center' }
+        height : "full-125",
+        toolbar: "#toolbarDemo",
+        id : "purchaseListTable",
+        cols : [[
+            {field: 'code', title: '商品编码', minWidth:50, align:"center"},
+            {field: 'name', title: '商品名称', minWidth:100, align:'center'},
+            {field: 'model', title: '商品型号', minWidth:100, align:'center'},
+            {field: 'price', title: '单价', minWidth:100, align:'center'},
+            {field: 'num', title: '数量', minWidth:100, align:'center'},
+            {field: 'unit', title: '单位', minWidth:100, align:'center'},
+            {field: 'total', title: '总金额', minWidth:100, align:'center'},
+            {title: '操作', minWidth:150, templet:'#goodsListBar',fixed:"right",align:"center"}
         ]],
-        data: []
+        data:[]
     });
 
-    table.on('toolbar(purchases)', function (obj) {
-        if (obj.event === 'add') {
-            layer.open({
-                title: '进货入库商品选择',
-                type: 2,
-                area: ['950px', '600px'],
-                maxmin: true,
-                content: ctx + '/common/toSelectGoodsPage'
-            });
-        }
+    //头工具栏事件
+    table.on('toolbar(purchases)', function(obj){
+        switch(obj.event){
+            case "add":
+                openGoodsDialog();
+                break;
+
+        };
     });
 
-    table.on('tool(purchases)', function (obj) {
-        if (obj.event === 'edit') {
-            openUpdateGoodsInfoDialog(obj.data);
-        } else if (obj.event === 'del') {
-            layer.confirm('确定移除当前商品？', { icon: 3, title: '商品选择' }, function (index) {
-                removeGoods(obj.data.goodsId || obj.data.id);
-                layer.close(index);
-            });
-        }
-    });
-
-    function openUpdateGoodsInfoDialog(goods) {
-        var gid = goods.goodsId || goods.id;
-        if (gid === undefined || gid === null || gid === '') {
-            layer.msg('商品 ID 不存在');
-            return;
-        }
-        var encodedGid = encodeURIComponent(gid);
-        var url = ctx + '/common/toUpdateGoodsInfoPage?gid=' + encodedGid
-            + '&id=' + encodedGid
-            + '&price=' + encodeURIComponent(goods.price || 0)
-            + '&num=' + encodeURIComponent(goods.num || 0)
-            + '&total=' + encodeURIComponent(goods.total || 0);
-        layer.open({
-            title: '进货入库商品更新',
-            type: 2,
-            area: ['800px', '550px'],
-            maxmin: true,
-            content: url
+    function openGoodsDialog(){
+        var url  =  ctx+"/common/toSelectGoodsPage";
+        var title="进货入库商品选择";
+        layui.layer.open({
+            title : title,
+            type : 2,
+            area:["950px","600px"],
+            maxmin:true,
+            content : url
         });
     }
 
-    function removeGoods(gid) {
-        datas = datas.filter(function (item) {
-            return String(item.goodsId) !== String(gid);
+    /**
+     * 行监听
+     */
+    table.on("tool(purchases)", function(obj){
+        var layEvent = obj.event;
+        if(layEvent === "edit") {
+        	openUpdateGoodsInfoDialog(obj.data.goodsId);
+        }else if(layEvent === "del") {
+            layer.confirm('确定移除当前商品？', {icon: 3, title: "商品选择"}, function (index) {
+                datas.forEach((item,i) => {
+                    if(item.id === obj.data.id){
+                        //console.log(item);
+                        datas.splice(i,1);
+                    }
+                });
+                reloadTableData();
+                top.layer.close(index);
+            })
+        }
+    });
+
+
+    function openUpdateGoodsInfoDialog(id){
+        var goods;
+        for (let i = 0; i < datas.length; i++) {
+        	if(datas[i].goodsId==id){
+                goods= datas[i];
+                break;
+            }
+        }
+        var url  =  ctx+"/common/toUpdateGoodsInfoPage?id="
+            +goods.goodsId+"&price="+goods.price+"&num="+goods.num+"&total="+goods.total;
+        layui.layer.open({
+            title : "进货入库商品更新",
+            type : 2,
+            area:["800px","550px"],
+            maxmin:true,
+            content : url
         });
-        reloadTableData();
     }
 
-    form.on('submit(addPurchaseList)', function (data) {
-        var index = top.layer.msg('数据提交中，请稍候', { icon: 16, time: false, shade: 0.8 });
-        $.post(ctx + '/purchase/save', data.field, function (res) {
-            if (res.code === 200) {
+
+    form.on("submit(addPurchaseList)", function (data) {
+        var index = top.layer.msg('数据提交中，请稍候', {icon: 16, time: false, shade: 0.8});
+        $.post(ctx + "/purchase/save", data.field, function (res) {
+            if (res.code == 200) {
                 setTimeout(function () {
                     top.layer.close(index);
-                    top.layer.msg('操作成功');
-                    layer.closeAll('iframe');
-                    window.location.href = ctx + '/purchase/index';
+                    top.layer.msg("操作成功！");
+                    layer.closeAll("iframe");
+                    //刷新父页面
+                    parent.location.reload();
+                   window.location.href=ctx+"/purchase/index";
                 }, 500);
             } else {
-                layer.msg(res.message, { icon: 5 });
+                layer.msg(
+                    res.message, {
+                        icon: 5
+                    }
+                );
             }
         });
         return false;
     });
+
+
+
 });
 
-var datas = [];
+var datas=[];
+ function getGoodsSelectInfo(gid,gname,code,price,num,model,unit,typeId,flag){
+     if(flag){
+         // 添加操作
+         datas.push({
+             "goodsId":gid,
+             "code":code,
+             "name":gname,
+             "price":price,
+             "num":num,
+             "model":model,
+             "unit":unit,
+             "typeId":typeId,
+             "total":price*num
+         });
+     }else{
+         // 更新操作
+         datas.forEach((item,i) => {
+             if(item.goodsId === gid){
+                 // 修改价格、数量与总金额即可
+                 item.price=price;
+                 item.num=num;
+                 item.total=price*num;
+             }
+         });
+     }
 
-function getGoodsSelectInfo(gid, gname, code, price, num, model, unit, typeId, flag) {
-    var unitPrice = Number(price), quantity = Number(num);
-    unitPrice = isFinite(unitPrice) ? unitPrice : 0;
-    quantity = isFinite(quantity) ? quantity : 0;
+     /**
+      * 重载表格数据
+      */
+     reloadTableData();
+ }
 
-    if (flag) {
-        var existing = datas.some(function (item) {
-            return String(item.goodsId) === String(gid);
-        });
-        if (existing) {
-            layui.layer.msg('该商品已添加，请使用编辑修改数量或单价');
-            return;
-        }
-        datas.push({
-            id: gid,
-            goodsId: gid,
-            code: code,
-            name: gname,
-            price: unitPrice,
-            num: quantity,
-            model: model,
-            unit: unit,
-            typeId: typeId,
-            total: unitPrice * quantity
-        });
-    } else {
-        datas.forEach(function (item) {
-            if (String(item.goodsId) === String(gid)) {
-                item.price = unitPrice;
-                item.num = quantity;
-                item.total = unitPrice * quantity;
-            }
-        });
-    }
-    reloadTableData();
-}
 
-function reloadTableData() {
-    layui.table.reload('purchaseListTable', { data: datas });
-    var total = datas.reduce(function (sum, item) {
-        return sum + Number(item.total || 0);
-    }, 0);
-    layui.jquery('#amountPayable').val(total);
-    layui.jquery('#amountPaid').val(total);
-    layui.jquery("input[name='goodsJson']").val(JSON.stringify(datas));
-}
+ function reloadTableData(){
+     layui.table.reload("purchaseListTable",{
+         data:datas
+     })
+     var total=0;
+     for (let i = 0; i < datas.length; i++) {
+         total = total + datas[i].total;
+     }
+     layui.jquery("#amountPayable").val(total);
+     layui.jquery("#amountPaid").val(total);
+     // 设置选择商品json数据到隐藏域 便于后续表单提交
+     layui.jquery("input[name='goodsJson']").val(JSON.stringify(datas));
+ }
