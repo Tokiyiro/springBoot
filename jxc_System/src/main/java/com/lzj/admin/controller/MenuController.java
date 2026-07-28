@@ -7,6 +7,7 @@ import com.lzj.admin.pojo.Menu;
 import com.lzj.admin.service.MenuService;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,52 +25,80 @@ import java.util.Map;
 @Controller
 @RequestMapping("/menu")
 public class MenuController {
-    @Autowired
-    private MenuService menuService;
-    @RequestMapping("index")
-    public String index(){
-        return"/menu/menu";
-    }
-    @RequestMapping("list")
-    @ResponseBody
-    public Map<String,Object> list(){
-        return this.menuService.menuList();
-    }
-    @RequestMapping("queryAllMenus")
-    @ResponseBody
-    public List<TreeDto> queryAllMenu(Integer roleId){
-        return this.menuService.queryAllMenu(roleId);
-    }
-    @RequestMapping("addMenuPage")
-    public String addMenuPage(Integer grade,Integer pId, Model model){
-        model.addAttribute("pId",pId);
 
-        model.addAttribute("grade",grade);
-        return "/menu/add";
-    }
-    @RequestMapping("save")
-    @ResponseBody
-    public RespBean save(Menu menu)
-    {
-     this.menuService.saveMenu(menu);
-        return RespBean.success("保存成功");
-    }
-    @RequestMapping("delete")
-    @ResponseBody
-    public RespBean delete (Integer id){
-        this.menuService.deleteMenu(id);
-        return RespBean.success("删除成功");
-    }
-    @RequestMapping("updateMenuPage")
-    public String updateMenuPage(Integer id,Model model){
-        Menu temp = this.menuService.getOne(new QueryWrapper<Menu>().eq("id", id));
-        model.addAttribute("menu",temp);
-        return "/menu/update";
-    }
-    @RequestMapping("update")
-    @ResponseBody
-    public RespBean updeta(Menu menu){
-        this.menuService.updateMenu(menu);
-        return RespBean.success("修改成功");
-    }
+	@Autowired
+	private MenuService menuService;
+	
+	@RequestMapping("index")
+	public String index() {
+	    return "menu/menu";
+	}
+
+	/**
+	 * 菜单列表
+	 */
+	@RequestMapping("list")
+	@ResponseBody
+	public Map<String,Object> list() {
+
+	    Map<String,Object> result = new HashMap<>();
+
+	    result.put("code",0);
+	    result.put("msg","");
+	    result.put("data",menuService.listAllMenu());
+
+	    return result;
+	}
+	
+	@RequestMapping("addMenuPage")
+	public String addMenuPage(Integer grade, Integer pId, Model model) {
+
+	    model.addAttribute("grade", grade);
+	    model.addAttribute("pId", pId);
+
+	    return "menu/add";
+	}
+	
+	@RequestMapping("save")
+	@ResponseBody
+	public RespBean save(Menu menu) {
+
+	    if (menuService.save(menu)) {
+	        return RespBean.success("保存成功");
+	    }
+
+	    return RespBean.error("保存失败");
+	}
+	
+	@RequestMapping("updateMenuPage")
+	public String updateMenuPage(Integer id, Model model) {
+
+	    Menu menu = menuService.getById(id);
+
+	    model.addAttribute("menu", menu);
+
+	    return "menu/update";
+	}
+	
+	@RequestMapping("update")
+	@ResponseBody
+	public RespBean update(Menu menu) {
+
+	    menuService.updateMenu(menu);
+
+	    return RespBean.success("修改成功");
+	}
+	
+	@PreAuthorize("hasAnyAuthority('1030')")
+	@RequestMapping("delete")
+	@ResponseBody
+	public RespBean delete(Integer id){
+
+	    if(menuService.deleteMenu(id)){
+	        return RespBean.success("删除成功");
+	    }
+
+	    return RespBean.error("删除失败");
+	}
+	
 }

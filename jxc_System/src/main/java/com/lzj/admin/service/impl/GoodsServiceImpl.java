@@ -31,45 +31,59 @@ import java.util.Map;
  */
 @Service
 public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements GoodsService {
+	
+	@Override
+	public Map<String, Object> goodsList(GoodsQuery goodsQuery) {
+	
+	    Page<Goods> page = new Page<>(
+	            goodsQuery.getPage(),
+	            goodsQuery.getLimit());
+	
+	    IPage<Goods> iPage = baseMapper.goodsList(page, goodsQuery);
+	
+	    return PageResultUtil.setResult(
+	            iPage.getTotal(),
+	            iPage.getRecords());
+	}
+	
+	@Override
+	@Transactional
+	public void updateStock(Goods goods) {
+	
+	    AssertUtil.isTrue(goods.getId()==null,"商品不存在");
+	
+	    Goods dbGoods=getById(goods.getId());
+	
+	    AssertUtil.isTrue(dbGoods==null,"商品不存在");
+	
+	    dbGoods.setInventoryQuantity(goods.getInventoryQuantity());
+	
+	    dbGoods.setPurchasingPrice(goods.getPurchasingPrice());
+	
+	    // 进入期初库存
+	    dbGoods.setState(1);
+	
+	    updateById(dbGoods);
+	}
+	
+	@Override
+	@Transactional
+	public void deleteStock(Integer id) {
+	
+	    Goods goods=getById(id);
+	
+	    AssertUtil.isTrue(goods==null,"商品不存在");
+	
+	    goods.setInventoryQuantity(0);
+	
+	    goods.setPurchasingPrice(0F);
+	
+	    // 恢复初始化状态
+	    goods.setState(0);
+	
+	    updateById(goods);
+	
+	}
 
-    @Resource
-    private GoodsTypeService goodsTypeService;
-
-    @Resource
-    private SaleListGoodsService saleListGoodsService;
-
-    @Resource
-    private CustomerReturnListGoodsService customerReturnListGoodsService;
-    @Resource
-    private GoodsMapper goodsMapper;
-
-    @Override
-    public Map<String, Object> queryGoodsByParams(GoodsQuery goodsQuery) {
-
-        // 分页对象
-        Page<Goods> page = new Page<>(goodsQuery.getPage(), goodsQuery.getLimit());
-
-        // 查询条件
-        QueryWrapper<Goods> wrapper = new QueryWrapper<>();
-
-        // 商品名称
-        if (StringUtils.isNotBlank(goodsQuery.getGoodsName())) {
-            wrapper.like("name", goodsQuery.getGoodsName());
-        }
-
-        // 商品类别
-        if (goodsQuery.getTypeId() != null) {
-            wrapper.eq("type_id", goodsQuery.getTypeId());
-        }
-
-        IPage<Goods> goodsPage = baseMapper.queryGoodsByParams(page, goodsQuery);
-        System.out.println(goodsPage.getRecords());
-
-        return PageResultUtil.setResult(goodsPage.getTotal(), goodsPage.getRecords());
-    }
-    
-    @Override
-    public Goods queryGoodsInfo(Integer id) {
-        return goodsMapper.queryGoodsInfo(id);
-    }
+	
 }

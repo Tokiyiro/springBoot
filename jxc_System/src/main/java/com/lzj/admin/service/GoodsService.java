@@ -17,8 +17,16 @@ public interface GoodsService extends IService<Goods> {
 	/**
      * 商品分页查询
      */
-    Map<String,Object> queryGoodsByParams(GoodsQuery goodsQuery);
-    
-    Goods queryGoodsInfo(Integer id);
+    Map<String,Object> goodsList(GoodsQuery goodsQuery);
+
+    /**
+     * 修改期初库存
+     */
+    void updateStock(Goods goods);
+
+    /**
+     * 删除期初库存
+     */
+    void deleteStock(Integer id);
 	
 }

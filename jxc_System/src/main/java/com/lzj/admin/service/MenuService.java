@@ -20,7 +20,18 @@ public interface MenuService extends IService<Menu> {
     public void saveMenu(Menu menu);
     public Menu findMenuByNameAndGrade(String name, Integer grade);
     public Menu findMenuByAclValue(String aclValue);
-    public void deleteMenu(Integer id);
     public List findFather(Integer id);
-    public void updateMenu(Menu menu);
+
+
+	/**
+     * 查询所有菜单（树形）
+     */
+    List<TreeDto> listAllMenu();
+    
+    boolean deleteMenu(Integer id);
+
+    /**
+     * 修改菜单
+     */
+    void updateMenu(Menu menu);
 }

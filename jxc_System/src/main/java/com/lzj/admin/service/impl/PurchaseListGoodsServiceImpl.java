@@ -23,5 +23,18 @@ import java.util.Map;
  */
 @Service
 public class PurchaseListGoodsServiceImpl extends ServiceImpl<PurchaseListGoodsMapper, PurchaseListGoods> implements PurchaseListGoodsService {
+	@Override
+	public Map<String,Object> queryPurchaseListGoodsByParams(PurchaseListGoodsQuery purchaseListGoodsQuery) {
 
+
+	    QueryWrapper<PurchaseListGoods> wrapper = new QueryWrapper<>();
+
+
+	    wrapper.eq( "purchase_list_id", purchaseListGoodsQuery.getPurchaseListId());
+
+	    return PageResultUtil.setResult(Long.valueOf(this.count(wrapper)),this.list(wrapper));
+
+
+
+	}
 }

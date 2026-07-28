@@ -23,5 +23,67 @@
           AND purchase_date < TRUNC(SYSDATE) + 1
         ]]>
     </select>
-
+    
+	<select id="queryPurchaseListByParams" resultType="com.lzj.admin.pojo.PurchaseList">
+	
+	    SELECT
+	        p.id,
+	        p.amount_paid,
+	        p.amount_payable,
+	        p.purchase_date,
+	        p.remarks,
+	        p.state,
+	        p.purchase_number,
+	        p.supplier_id,
+	        p.user_id,
+	
+	        s.name supplierName,
+	
+	        u.user_name userName
+	
+	    FROM t_purchase_list p
+	
+	    LEFT JOIN t_supplier s
+	        ON p.supplier_id = s.id
+	
+	    LEFT JOIN t_user u
+	        ON p.user_id = u.id
+	
+	
+	    <where>
+	
+	        <if test="purchaseListQuery.purchaseNumber != null
+	                  and purchaseListQuery.purchaseNumber != ''">
+	            AND p.purchase_number LIKE '%'||#{purchaseListQuery.purchaseNumber}||'%'
+	        </if>
+	
+	
+	        <if test="purchaseListQuery.supplierId != null">
+	            AND p.supplier_id = #{purchaseListQuery.supplierId}
+	        </if>
+	
+	
+	        <if test="purchaseListQuery.state != null">
+	            AND p.state = #{purchaseListQuery.state}
+	        </if>
+	
+	
+	        <if test="purchaseListQuery.startDate != null
+	                  and purchaseListQuery.startDate != ''">
+	            AND p.purchase_date &gt;=
+	            TO_DATE(#{purchaseListQuery.startDate},'yyyy-MM-dd')
+	        </if>
+	
+	
+	        <if test="purchaseListQuery.endDate != null
+	                  and purchaseListQuery.endDate != ''">
+	            AND p.purchase_date &lt;
+	            TO_DATE(#{purchaseListQuery.endDate},'yyyy-MM-dd') + 1
+	        </if>
+	
+	    </where>
+	
+	    ORDER BY p.id DESC
+	
+	</select>
 </mapper>

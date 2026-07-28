@@ -11,8 +11,8 @@ public interface GoodsMapper extends BaseMapper<Goods> {
 
 	IPage<Goods> queryGoodsByParams(Page<Goods> page,@Param("query") GoodsQuery goodsQuery);
 	
-	/**
-     * 根据id查询商品详细信息
+	 /**
+     * 商品分页
      */
-	Goods queryGoodsInfo(Integer id);
+    IPage<Goods> goodsList(Page<Goods> page,@Param("query") GoodsQuery goodsQuery);
 }

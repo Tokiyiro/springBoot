@@ -10,4 +10,5 @@ import java.util.Map;
 @Mapper
 public interface MenuMapper extends BaseMapper<Menu> {
     public List<TreeDto> queryAllMenu();
+    List<TreeDto> listAllMenu();
 }

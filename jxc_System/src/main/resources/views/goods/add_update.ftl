@@ -106,9 +106,9 @@
             <button class="layui-btn layui-btn-lg" lay-submit=""
                     lay-filter="addOrUpdateGoods">保存
             </button>
-            <button class="layui-btn layui-btn-lg" lay-submit=""
-                    lay-filter="next">保存并新增下一商品
-            </button>
+            <button type="button" class="layui-btn layui-btn-lg" id="saveAndNext">
+			    保存并新增下一商品
+			</button>
             <a class="layui-btn layui-btn-lg layui-btn-normal"  id="closeDlg" href="javascript:void(0)">取消</a>
         </div>
     </div>

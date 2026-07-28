@@ -30,12 +30,23 @@ import javax.annotation.Resource;
 @Service
 public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType> implements GoodsTypeService {
 
-	@Resource
-    private GoodsTypeMapper goodsTypeMapper;
+	@Override
+	public List<TreeDto> queryAllGoodsTypes() {
+		 List<GoodsType> goodsTypes = this.list();
 
-    @Override
-    public List<GoodsType> queryAllGoodsTypes() {
-        return goodsTypeMapper.queryAllGoodsTypes();
-    }
+		    List<TreeDto> treeDtos = new ArrayList<>();
+
+		    for (GoodsType goodsType : goodsTypes) {
+
+		    	TreeDto treeDto = new TreeDto();
+
+		        treeDto.setId(goodsType.getId());
+		        treeDto.setName(goodsType.getName());
+		        treeDto.setpId(goodsType.getpId());
+
+		        treeDtos.add(treeDto);
+		    }
+		    return treeDtos;
+	}
 	
 }

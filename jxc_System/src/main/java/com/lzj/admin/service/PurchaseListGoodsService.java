@@ -12,5 +12,5 @@ import java.util.Map;
  * @date 2022/1/19 13:58
  */
 public interface PurchaseListGoodsService extends IService<PurchaseListGoods> {
-
+	Map<String,Object> queryPurchaseListGoodsByParams(PurchaseListGoodsQuery purchaseListGoodsQuery);
 }

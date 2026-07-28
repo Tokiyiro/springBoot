@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>日销售统计</title>
+	<title>月销售统计</title>
 	<#include "../common.ftl">
 </head>
 <body class="childrenBody">

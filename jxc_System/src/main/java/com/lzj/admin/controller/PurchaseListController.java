@@ -67,7 +67,9 @@ public class PurchaseListController {
     @RequestMapping("list")
     @ResponseBody
     public Map<String,Object> purchaseList(PurchaseListQuery purchaseListQuery){
-        return null;
+
+        return purchaseListService.queryPurchaseListByParams(purchaseListQuery);
+
     }
 
     /**
@@ -78,7 +80,17 @@ public class PurchaseListController {
     @RequestMapping("delete")
     @ResponseBody
     public RespBean delete(Integer id){
+
+        if(id == null){
+            return RespBean.error("参数不能为空");
+        }
+
+
+        purchaseListService.deletePurchaseList(id);
+
+
         return RespBean.success("删除成功");
+
     }
 
     @RequestMapping("countPurchase")

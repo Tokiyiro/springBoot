@@ -140,5 +140,35 @@
         where t2.sale_date BETWEEN #{begin}	 and #{end}
         GROUP BY t2.sale_date
     </select>
-
+	<select id="countMonthSale" resultType="java.util.Map">
+	
+	    select
+	
+	    sum(t3.purchasing_price * t1.num) as amountCost,
+	
+	    sum(t1.price * t1.num) as amountSale,
+	
+	    to_char(t2.sale_date,'YYYY-MM') as saleMonth
+	
+	    from
+	    t_sale_list_goods t1
+	
+	    LEFT JOIN t_sale_list t2
+	    on t1.sale_list_id = t2.id
+	
+	    LEFT JOIN t_goods t3
+	    on t1.goods_id = t3.id
+	
+	    where
+	    t2.sale_date &gt;= to_date(#{begin},'YYYY-MM')
+	    and
+	    t2.sale_date &lt; add_months(to_date(#{end},'YYYY-MM'),1)
+	
+	    GROUP BY
+	    to_char(t2.sale_date,'YYYY-MM')
+	
+	    ORDER BY
+	    saleMonth
+	
+	</select>
 </mapper>

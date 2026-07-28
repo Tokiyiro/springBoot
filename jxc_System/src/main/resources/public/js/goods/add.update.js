@@ -80,8 +80,35 @@ layui.use(['form', 'layer'], function () {
         });
         return false;
     });
+    
+    $("#saveAndNext").click(function(){
 
+        var data = $("form").serialize();
 
+        $.post(ctx+"/goods/save",data,function(res){
+
+            if(res.code==200){
+
+                layer.msg("添加成功");
+
+                // 清空表单
+                $("form")[0].reset();
+
+                // 清空隐藏id
+                $("input[name='id']").val("");
+
+                // 重新渲染layui
+                form.render("select");
+
+            }else{
+
+                layer.msg("添加失败");
+            }
+
+        });
+
+    });
+    
     $("#reloadGoodsType").click(function (){
         var url  =  ctx+"/goods/toGoodsTypePage?typeId="+$("input[name='typeId']").val();
         var title="商品管理-商品类别";

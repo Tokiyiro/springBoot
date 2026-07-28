@@ -111,7 +111,8 @@ public class CommonController {
     @RequestMapping("stockList")
     @ResponseBody
     public Map<String,Object> stockLick(GoodsQuery goodsQuery){
-    	
+    	System.out.println("商品名称:"+goodsQuery.getGoodsName());
+        System.out.println("分类ID:"+goodsQuery.getTypeId());
     	Page<Goods> page = new Page<>(goodsQuery.getPage(), goodsQuery.getLimit());
 
 

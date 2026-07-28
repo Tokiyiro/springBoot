@@ -16,7 +16,7 @@
         <label class="layui-form-label">类别图标</label>
         <div class="layui-input-block">
             <input type="text" class="layui-input userName"
-                    name="aclValue" id="icon" placeholder="请输入图标">
+                    name="icon" id="icon" placeholder="请输入图标">
         </div>
     </div>
     <input type="hidden" name="pId" value="${pId!}">

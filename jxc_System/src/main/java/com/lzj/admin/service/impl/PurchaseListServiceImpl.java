@@ -1,5 +1,6 @@
 package com.lzj.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -68,6 +69,35 @@ public class PurchaseListServiceImpl extends ServiceImpl<PurchaseListMapper, Pur
 
     @Autowired
     private GoodsTypeService goodsTypeService;
+
+    @Override
+    public Map<String,Object> queryPurchaseListByParams(PurchaseListQuery purchaseListQuery) {
+
+
+        Page<PurchaseList> page = new Page<>(purchaseListQuery.getPage(),purchaseListQuery.getLimit());
+
+
+        IPage<PurchaseList> iPage = baseMapper.queryPurchaseListByParams(page,purchaseListQuery);
+
+
+        return PageResultUtil.setResult(iPage.getTotal(),iPage.getRecords());
+    }
+
+    @Override
+    @Transactional
+    public void deletePurchaseList(Integer id) {
+
+        //删除进货单商品明细
+        QueryWrapper<PurchaseListGoods> wrapper = new QueryWrapper<>();
+
+        wrapper.eq("purchase_list_id", id);
+
+        purchaseListGoodsService.remove(wrapper);
+
+        //删除进货单
+        this.removeById(id);
+
+    }
 
 	
 

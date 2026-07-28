@@ -142,7 +142,52 @@ public class SaleListController {
     @RequestMapping("countSaleByMonth")
     @ResponseBody
     public Map<String,Object> countSaleByMonth(String begin,String end){
-        return null;
+
+        Map<String,Object> result = new HashMap<>();
+
+        List<SaleCount> saleCounts = new ArrayList<>();
+
+        // 查询数据库统计结果
+        List<Map<String,Object>> list = saleListService.countMonthSale(begin,end);
+
+        for(Map<String,Object> map:list){
+
+            SaleCount saleCount = new SaleCount();
+
+            saleCount.setDate(
+                map.get("SALEMONTH").toString()
+            );
+
+            saleCount.setAmountCost(
+                MathUtil.format2Bit(
+                    Float.parseFloat(map.get("AMOUNTCOST").toString())
+                )
+            );
+
+            saleCount.setAmountSale(
+                MathUtil.format2Bit(
+                    Float.parseFloat(map.get("AMOUNTSALE").toString())
+                )
+            );
+
+            saleCount.setAmountProfit(
+                MathUtil.format2Bit(
+                    saleCount.getAmountSale()
+                    -
+                    saleCount.getAmountCost()
+                )
+            );
+
+            saleCounts.add(saleCount);
+        }
+
+        result.put("count",saleCounts.size());
+        result.put("data",saleCounts);
+        result.put("code",0);
+        result.put("msg","");
+
+
+        return result;
     }
 
 

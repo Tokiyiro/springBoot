@@ -1,6 +1,9 @@
 package com.lzj.admin.service;
 
 import com.lzj.admin.pojo.PurchaseList;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lzj.admin.pojo.PurchaseListGoods;
 import com.lzj.admin.query.PurchaseListQuery;
@@ -17,4 +20,7 @@ public interface PurchaseListService extends IService<PurchaseList> {
 
     String getNextPurchaseNumber();
 
+    Map<String,Object> queryPurchaseListByParams(PurchaseListQuery purchaseListQuery);
+    
+    void deletePurchaseList(Integer id);
 }

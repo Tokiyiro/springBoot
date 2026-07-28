@@ -63,13 +63,17 @@ return treeDtos;
     }
 
     @Override
-    public void deleteMenu(Integer id) {
-        AssertUtil.isTrue(null==id,"选择删除对象");
-        AssertUtil.isTrue(null!=findFather(id),"存在子目录");
-        Menu temp = this.getOne(new QueryWrapper<Menu>().eq("id", id));
-        temp.setIsDel(1);
-        AssertUtil.isTrue(!this.updateById(temp),"删除失败");
-    }
+	public boolean deleteMenu(Integer id) {
+
+	    QueryWrapper<Menu> wrapper = new QueryWrapper<>();
+	    wrapper.eq("p_id", id);
+
+	    Integer count = count(wrapper);
+
+	    AssertUtil.isTrue(count > 0, "存在子级菜单，无法删除");
+
+	    return removeById(id);
+	}
 
     @Override
     public List<Menu> findFather(Integer id) {
@@ -99,5 +103,11 @@ return treeDtos;
                 null == this.findFather(menu.getpId()),"请指定上级菜单!");
         AssertUtil.isTrue(!(this.updateById(menu)),"菜单记录更新失败!");
     }
+
+    @Override
+    public List<TreeDto> listAllMenu() {
+        return baseMapper.listAllMenu();
+    }
+    
 }
 

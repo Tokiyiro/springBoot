@@ -65,5 +65,36 @@
 	    WHERE g.ID = #{id}
 	
 	</select>
+	
+	<select id="goodsList" resultType="com.lzj.admin.pojo.Goods">
 
+	    SELECT
+	        g.*,
+	        g.unit unitName,
+	        gt.name typeName
+	    FROM t_goods g
+	    LEFT JOIN t_goods_type gt
+	        ON g.type_id = gt.id
+	
+	    <where>
+	
+	        g.is_del = 0
+	
+	        <if test="query.goodsName != null and query.goodsName != ''">
+	            AND g.name LIKE '%' || #{query.goodsName} || '%'
+	        </if>
+	
+	        <if test="query.type == 1">
+	            AND NVL(g.inventory_quantity,0)=0
+	        </if>
+	
+	        <if test="query.type == 2">
+	            AND NVL(g.inventory_quantity,0)&gt;0
+	        </if>
+	
+	    </where>
+	
+	    ORDER BY g.id
+	
+	</select>
 </mapper>
